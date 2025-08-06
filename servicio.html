@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Compromisos que nacen del corazón - Jerovia</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
+  body {
+    font-family: 'Montserrat', sans-serif;
+    background: linear-gradient(135deg, #fcefee, #e9d7f7, #c7e8f9);
+    color: #4a3c4a;
+    margin: 0; padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+  }
+  header {
+    background: #f8c8dc;
+    width: 100%;
+    padding: 1rem 0;
+    text-align: center;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #5a3a58;
+    box-shadow: 0 4px 10px rgba(200, 160, 190, 0.4);
+    user-select: none;
+    letter-spacing: 1.2px;
+  }
+  main {
+    flex: 1;
+    width: 100%;
+    max-width: 480px;
+    background: #fff0f6cc;
+    margin: 1rem;
+    padding: 2rem 2.5rem 3rem 2.5rem;
+    border-radius: 16px;
+    box-shadow: 0 10px 20px rgb(214 172 206 / 0.35);
+    position: relative;
+  }
+  label {
+    display: block;
+    margin: 1.2rem 0 0.5rem 0;
+    font-weight: 600;
+    color: #734563;
+  }
+  input[type="text"], textarea {
+    width: 100%;
+    padding: 0.7rem 1rem;
+    border-radius: 12px;
+    border: 2px solid #dba1c9;
+    font-size: 1.1rem;
+    font-family: 'Montserrat', sans-serif;
+    resize: vertical;
+    background: #fff8fc;
+    transition: border-color 0.3s ease;
+  }
+  input[type="text"]:focus, textarea:focus {
+    outline: none;
+    border-color: #c67fc6;
+    background: #fff0fa;
+  }
+  textarea {
+    min-height: 100px;
+  }
+  button {
+    margin-top: 1.8rem;
+    background: linear-gradient(45deg, #ef9bce, #ce9bf1, #91c8f9);
+    color: white;
+    border: none;
+    padding: 0.85rem 1.6rem;
+    font-size: 1.2rem;
+    border-radius: 14px;
+    cursor: pointer;
+    font-weight: 700;
+    box-shadow: 0 6px 12px rgb(187 129 195 / 0.7);
+    transition: background 0.4s ease;
+    user-select: none;
+  }
+  button:hover {
+    background: linear-gradient(45deg, #e281bf, #b36fd6, #6ca1d9);
+  }
+  .success-msg {
+    margin-top: 1.3rem;
+    color: #6b3a6c;
+    font-weight: 700;
+    user-select: none;
+    text-align: center;
+  }
+  .link-organizer {
+    position: fixed;
+    top: 18px;
+    right: 18px;
+    background: #f8c8dccc;
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-style: italic;
+    font-weight: 700;
+    color: #734563;
+    cursor: pointer;
+    box-shadow: 0 0 8px rgb(255 182 211 / 0.8);
+    user-select: none;
+    transition: background-color 0.3s ease;
+    z-index: 1000;
+  }
+  .link-organizer:hover {
+    background: #f79fca;
+    color: white;
+    box-shadow: 0 0 14px rgb(255 105 180 / 0.9);
+  }
+  .hidden {
+    display: none;
+  }
+  hr {
+    margin: 2.5rem 0;
+    border: 1px solid #ddb3d5;
+  }
+  .list-participants {
+    max-height: 220px;
+    overflow-y: auto;
+    background: #f9d9e7;
+    border-radius: 12px;
+    padding: 0.7rem 1.2rem;
+    border: 1.5px solid #dba1c9;
+    font-weight: 600;
+    color: #734563;
+  }
+  .list-participants p {
+    margin: 0.3rem 0;
+    user-select: text;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #5a3a58;
+  }
+  th, td {
+    border: 1.5px solid #dba1c9;
+    padding: 0.5rem 0.8rem;
+    text-align: left;
+    user-select: text;
+  }
+  th {
+    background-color: #f8c8dc;
+  }
+  .btn-restart {
+    background: #b564a7;
+    margin-top: 1.8rem;
+    box-shadow: 0 4px 10px rgb(150 60 140 / 0.6);
+  }
+  .btn-restart:hover {
+    background: #894073;
+  }
+  .mode-header {
+    margin-bottom: 1.2rem;
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: #733a59;
+    user-select: none;
+    text-align: center;
+  }
+  /* Panel contraseña */
+  #password-panel {
+    position: fixed;
+    top: 60px;
+    right: 18px;
+    background: #fff0f6cc;
+    border-radius: 16px;
+    padding: 1rem 1.4rem;
+    box-shadow: 0 8px 18px rgba(214, 172, 206, 0.45);
+    z-index: 1100;
+    display: none;
+    width: 280px;
+  }
+  #password-panel label {
+    color: #734563;
+    font-weight: 700;
+    display: block;
+    margin-bottom: 0.4rem;
+  }
+  #password-panel input[type="password"] {
+    width: 100%;
+    padding: 0.5rem 0.9rem;
+    border-radius: 12px;
+    border: 2px solid #dba1c9;
+    font-size: 1.1rem;
+    font-family: 'Montserrat', sans-serif;
+    background: #fff8fc;
+    transition: border-color 0.3s ease;
+  }
+  #password-panel input[type="password"]:focus {
+    outline: none;
+    border-color: #c67fc6;
+    background: #fff0fa;
+  }
+  #password-panel button {
+    margin-top: 1rem;
+    width: 100%;
+    background: linear-gradient(45deg, #ef9bce, #ce9bf1, #91c8f9);
+    color: #5a3a58;
+    border: none;
+    padding: 0.6rem 0;
+    font-weight: 700;
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: 0 6px 12px rgb(187 129 195 / 0.7);
+    transition: background 0.3s ease;
+  }
+  #password-panel button:hover {
+    background: linear-gradient(45deg, #e281bf, #b36fd6, #6ca1d9);
+  }
+  #password-error {
+    color: #a84949;
+    margin-top: 0.8rem;
+    font-weight: 700;
+    display: none;
+    text-align: center;
+  }
+  @media (max-width: 520px) {
+    main {
+      margin: 0.8rem;
+      padding: 1.6rem 1.8rem 2.5rem 1.8rem;
+      border-radius: 14px;
+    }
+    button {
+      font-size: 1rem;
+      padding: 0.7rem 1.3rem;
+      border-radius: 12px;
+    }
+    #password-panel {
+      width: 90%;
+      right: 5%;
+      top: 60px;
+    }
+  }
+</style>
+</head>
+<body>
+<header>Compromisos que nacen del corazón - Jerovia</header>
+<main id="main-content">
+
+<!-- Modo Usuario -->
+<div id="user-mode">
+  <label for="name-input">Tu nombre:</label>
+  <input type="text" id="name-input" placeholder="Ej: Sol Volpe" autocomplete="off" />
+
+  <label for="action-input">Acción concreta de servicio que ya realizaste:</label>
+  <textarea id="action-input" placeholder="Ej: Visité a una persona sola y la acompañé" maxlength="250"></textarea>
+
+  <button id="submit-btn">Enviar compromiso</button>
+
+  <p class="success-msg hidden" id="success-msg">¡Gracias, tu compromiso ha sido recibido 💖!</p>
+</div>
+
+<!-- Modo Organizadora -->
+<div id="organizer-mode" class="hidden">
+  <p class="mode-header">Modo Organizadora - Contraseña ingresada</p>
+  <div>
+    <strong>Participantes que ya enviaron su compromiso:</strong>
+    <div class="list-participants" id="participants-list">
+      <p><em>No hay datos aún.</em></p>
+    </div>
+  </div>
+
+  <button id="draw-btn">Sortear compromisos</button>
+  <button id="restart-btn" class="btn-restart">Reiniciar y borrar todo</button>
+
+  <div id="draw-results" style="margin-top:1.5rem;"></div>
+</div>
+
+<div class="link-organizer" id="organizer-link" title="Activar modo organizadora">Modo Organizadora 🔐</div>
+
+<!-- Panel Contraseña -->
+<div id="password-panel" class="hidden">
+  <label for="password-input">Ingrese contraseña:</label>
+  <input type="password" id="password-input" autocomplete="off" />
+  <button id="password-submit">Entrar</button>
+  <p id="password-error">Contraseña incorrecta. Intente de nuevo.</p>
+</div>
+
+<script>
+  (() => {
+    const STORAGE_KEY = 'jerovia_compromisos';
+    let commitments = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+
+    const userMode = document.getElementById('user-mode');
+    const organizerMode = document.getElementById('organizer-mode');
+    const participantsList = document.getElementById('participants-list');
+    const drawBtn = document.getElementById('draw-btn');
+    const restartBtn = document.getElementById('restart-btn');
+    const drawResults = document.getElementById('draw-results');
+    const successMsg = document.getElementById('success-msg');
+    const nameInput = document.getElementById('name-input');
+    const actionInput = document.getElementById('action-input');
+
+    const organizerLink = document.getElementById('organizer-link');
+    const passwordPanel = document.getElementById('password-panel');
+    const passwordInput = document.getElementById('password-input');
+    const passwordSubmit = document.getElementById('password-submit');
+    const passwordError = document.getElementById('password-error');
+
+    // Mostrar lista participantes
+    function refreshParticipantsList() {
+      participantsList.innerHTML = '';
+      if(commitments.length === 0) {
+        participantsList.innerHTML = '<p><em>No hay datos aún.</em></p>';
+        return;
+      }
+      // Solo mostrar nombres (sin acciones)
+      commitments.forEach(c => {
+        const p = document.createElement('p');
+        p.textContent = c.name;
+        participantsList.appendChild(p);
+      });
+    }
+
+    // Enviar compromiso
+    document.getElementById('submit-btn').addEventListener('click', () => {
+      const name = nameInput.value.trim();
+      const action = actionInput.value.trim();
+      if(!name || !action) {
+        alert('Por favor, completa tu nombre y la acción de servicio.');
+        return;
+      }
+      commitments.push({ name, action });
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(commitments));
+      nameInput.value = '';
+      actionInput.value = '';
+      successMsg.classList.remove('hidden');
+      setTimeout(() => successMsg.classList.add('hidden'), 3500);
+    });
+
+    // Mostrar/ocultar panel contraseña al click en el botón
+    organizerLink.addEventListener('click', () => {
+      if(passwordPanel.style.display === 'block') {
+        passwordPanel.style.display = 'none';
+        passwordError.style.display = 'none';
+      } else {
+        passwordPanel.style.display = 'block';
+        passwordInput.value = '';
+        passwordError.style.display = 'none';
+        passwordInput.focus();
+      }
+    });
+
+    // Validar contraseña
+    passwordSubmit.addEventListener('click', () => {
+      const pwd = passwordInput.value.trim();
+      if(pwd === 'jeroforlife') {
+        passwordPanel.style.display = 'none';
+        userMode.classList.add('hidden');
+        organizerMode.classList.remove('hidden');
+        refreshParticipantsList();
+        drawResults.innerHTML = '';
+      } else {
+        passwordError.style.display = 'block';
+      }
+    });
+
+    // Sorteo
+    drawBtn.addEventListener('click', () => {
+      if(commitments.length === 0) {
+        alert('No hay compromisos para sortear.');
+        return;
+      }
+      const shuffled = commitments.slice().sort(() => Math.random() - 0.5);
+      let html = '<table><thead><tr><th>Hermana que recibe</th><th>Compromiso asignado</th></tr></thead><tbody>';
+      commitments.forEach((c, i) => {
+        const assigned = shuffled[i % shuffled.length];
+        html += `<tr><td>${c.name}</td><td>${assigned.action}</td></tr>`;
+      });
+      html += '</tbody></table>';
+      drawResults.innerHTML = html;
+    });
+
+    // Reiniciar
+    restartBtn.addEventListener('click', () => {
+      if(confirm('¿Querés reiniciar y borrar todos los compromisos guardados?')) {
+        commitments = [];
+        localStorage.removeItem(STORAGE_KEY);
+        refreshParticipantsList();
+        drawResults.innerHTML = '';
+        userMode.classList.remove('hidden');
+        organizerMode.classList.add('hidden');
+      }
+    });
+
+  })();
+</script>
+</body>
+</html>
+

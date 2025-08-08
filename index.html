@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Compromisos que nacen del corazón - Jerovia</title>
 <style>
+  /* tu CSS original, lo dejo igual */
   @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
 
   body {
@@ -285,8 +286,10 @@
 
 <script>
   (() => {
-    const STORAGE_KEY = 'jerovia_compromisos';
-    let commitments = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    // URL de tu Web App de Google Apps Script
+    const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwCTT-eezG1txgezS2F42jczqOHkQE6fM6_X2rpmCg_CDsCU4bw3ViSM1UwlgrOyWX73Q/exec';
+
+    let commitments = []; // Se usarán solo para el modo organizadora localmente (no sincronizado con Sheets)
 
     const userMode = document.getElementById('user-mode');
     const organizerMode = document.getElementById('organizer-mode');
@@ -304,14 +307,13 @@
     const passwordSubmit = document.getElementById('password-submit');
     const passwordError = document.getElementById('password-error');
 
-    // Mostrar lista participantes
+    // Mostrar lista participantes (solo locales)
     function refreshParticipantsList() {
       participantsList.innerHTML = '';
       if(commitments.length === 0) {
         participantsList.innerHTML = '<p><em>No hay datos aún.</em></p>';
         return;
       }
-      // Solo mostrar nombres (sin acciones)
       commitments.forEach(c => {
         const p = document.createElement('p');
         p.textContent = c.name;
@@ -319,7 +321,7 @@
       });
     }
 
-    // Enviar compromiso
+    // Enviar compromiso a Google Sheets vía Apps Script
     document.getElementById('submit-btn').addEventListener('click', () => {
       const name = nameInput.value.trim();
       const action = actionInput.value.trim();
@@ -327,12 +329,26 @@
         alert('Por favor, completa tu nombre y la acción de servicio.');
         return;
       }
-      commitments.push({ name, action });
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(commitments));
-      nameInput.value = '';
-      actionInput.value = '';
-      successMsg.classList.remove('hidden');
-      setTimeout(() => successMsg.classList.add('hidden'), 3500);
+
+      // Enviar por POST
+      fetch(WEB_APP_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nombre: name, compromiso: action })
+      })
+      .then(response => response.text())
+      .then(data => {
+        // Guardamos localmente para la lista organizadora (opcional)
+        commitments.push({ name, action });
+        nameInput.value = '';
+        actionInput.value = '';
+        successMsg.classList.remove('hidden');
+        setTimeout(() => successMsg.classList.add('hidden'), 3500);
+      })
+      .catch(err => {
+        alert('Error al enviar compromiso. Intenta de nuevo.');
+        console.error(err);
+      });
     });
 
     // Mostrar/ocultar panel contraseña al click en el botón
@@ -348,7 +364,7 @@
       }
     });
 
-    // Validar contraseña
+    // Validar contraseña para mostrar modo organizadora
     passwordSubmit.addEventListener('click', () => {
       const pwd = passwordInput.value.trim();
       if(pwd === 'jeroforlife') {
@@ -362,7 +378,7 @@
       }
     });
 
-    // Sorteo
+    // Sorteo de compromisos (local)
     drawBtn.addEventListener('click', () => {
       if(commitments.length === 0) {
         alert('No hay compromisos para sortear.');
@@ -378,20 +394,17 @@
       drawResults.innerHTML = html;
     });
 
-    // Reiniciar
+    // Reiniciar datos locales
     restartBtn.addEventListener('click', () => {
-      if(confirm('¿Querés reiniciar y borrar todos los compromisos guardados?')) {
+      if(confirm('¿Querés reiniciar y borrar todos los compromisos guardados localmente?')) {
         commitments = [];
-        localStorage.removeItem(STORAGE_KEY);
         refreshParticipantsList();
         drawResults.innerHTML = '';
         userMode.classList.remove('hidden');
         organizerMode.classList.add('hidden');
       }
     });
-
   })();
 </script>
 </body>
 </html>
-
